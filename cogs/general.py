@@ -14,11 +14,18 @@ class General(commands.Cog):
 
     @commands.command(name='8ball')
     async def _8ball(self, ctx, *, question):
+        """Ask the magic 8-ball a question"""
         await ctx.send(f'{ctx.message.author.mention}, {EightBall.random()}')
 
     @commands.command(name='colour', aliases=['color'])
     @commands.max_concurrency(1, commands.BucketType.guild, wait=True)
     async def _colour(self, ctx, *, colour):
+        """Set name colour with CSS3 colours or hex (e.g. 0x00aaff)
+
+        CSS3 colours: https://www.w3.org/TR/css-color-3/#svg-color
+        Hex colour picker: https://www.google.com/search?q=hex+colour+picker
+        """
+
         colour_ci = colour.upper()
 
         # Check if valid hex colour
@@ -74,6 +81,7 @@ class General(commands.Cog):
     @commands.command(name='unusedroles')
     @commands.is_owner()
     async def _unusedroles(self, ctx):
+        """List roles which have no members"""
         unused = [f'{role.name}_{role.id}' for role in ctx.guild.roles if len(role.members) == 0]
         msg = 'none' if len(unused) == 0 else str(unused)
         await ctx.send(msg)

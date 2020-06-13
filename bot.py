@@ -28,25 +28,29 @@ class Bot:
 
         @self._client.command(name='load')
         @commands.is_owner()
-        async def _load(ctx, extension):
-            self._client.load_extension(f'cogs.{extension}')
-            await ctx.send(f'{extension} loaded')
+        async def _load(ctx, cog):
+            """Load the specified cog"""
+            self._client.load_extension(f'cogs.{cog}')
+            await ctx.send(f'{cog} loaded')
 
         @self._client.command(name='unload')
         @commands.is_owner()
-        async def _unload(ctx, extension):
-            self._client.unload_extension(f'cogs.{extension}')
-            await ctx.send(f'{extension} unloaded')
+        async def _unload(ctx, cog):
+            """Unload the specified cog"""
+            self._client.unload_extension(f'cogs.{cog}')
+            await ctx.send(f'{cog} unloaded')
 
         @self._client.command(name='reload')
         @commands.is_owner()
-        async def _reload(ctx, extension):
-            self._client.reload_extension(f'cogs.{extension}')
-            await ctx.send(f'{extension} reloaded')
+        async def _reload(ctx, cog):
+            """Reload the specified cog"""
+            self._client.reload_extension(f'cogs.{cog}')
+            await ctx.send(f'{cog} reloaded')
 
         @self._client.command(name='reload_all')
         @commands.is_owner()
-        async def _reload_all(ctx, extension):
+        async def _reload_all(ctx):
+            """Reload all cogs"""
             self._load_cogs(reload=True)
             await ctx.send('All cogs reloaded')
 

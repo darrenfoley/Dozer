@@ -18,6 +18,11 @@ class Giphy(commands.Cog):
 
     @commands.command(name='meme')
     async def _meme(self, ctx, *, query):
+        """Get the perfect GIF using GIPHY's special sauce algorithm
+
+        Uses GIPHY's translate endpoint: https://developers.giphy.com/docs/api/endpoint#translate
+        """
+
         api_instance = giphy_client.DefaultApi()
         api_key = self._config['giphy']['api-key']
 
@@ -35,15 +40,20 @@ class Giphy(commands.Cog):
             await ctx.send('something went wrong')
 
     @commands.command(name="randommeme")
-    async def _random_meme(self, ctx):
+    async def _random_meme(self, ctx, query=None):
+        """Get a random GIF. query is optional
+
+        Uses GIPHY's random endpoint: https://developers.giphy.com/docs/api/endpoint#random
+        """
+
         api_instance = giphy_client.DefaultApi()
         api_key = self._config['giphy']['api-key']
 
         try:
-            api_response = api_instance.gifs_random_get(api_key)
+            api_response = api_instance.gifs_random_get(api_key, tag=query)
             if api_response.data.url is not None and len(api_response.data.url) != 0:
                 await ctx.send(
-                    f'{ctx.message.author.mention} here\'s your random meme, you {Insult.random()}: {api_response.data.url}')
+                    f'{ctx.message.author.mention} here\'s your random{" "+ query if query is not None else ""} meme, you {Insult.random()}: {api_response.data.url}')
             else:
                 print(f'No URL in response when calling DefaultApi->gifs_random_get')
                 await ctx.send(f'I done goofed {ctx.message.author.mention}... try again')
