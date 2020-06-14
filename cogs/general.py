@@ -78,6 +78,14 @@ class General(commands.Cog):
 
             await user.add_roles(role)
 
+    @commands.command(name='fetch')
+    async def _fetch(self, ctx):
+        """Play fetch with me plz"""
+        await ctx.send(f'Okay, {ctx.message.author.mention}! 🐶')
+
+        activity = discord.Game(f'fetch with {ctx.message.author.display_name}')
+        await self._client.change_presence(activity=activity)
+
     @commands.command(name='unusedroles')
     @commands.is_owner()
     async def _unusedroles(self, ctx):
