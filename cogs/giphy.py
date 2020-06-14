@@ -40,7 +40,7 @@ class Giphy(commands.Cog):
             await ctx.send('something went wrong')
 
     @commands.command(name="randommeme")
-    async def _random_meme(self, ctx, query=None):
+    async def _random_meme(self, ctx, *, query=None):
         """Get a random GIF. query is optional
 
         Uses GIPHY's random endpoint: https://developers.giphy.com/docs/api/endpoint#random
