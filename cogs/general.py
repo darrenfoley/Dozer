@@ -1,3 +1,4 @@
+import json
 import re
 
 import discord
@@ -11,6 +12,18 @@ class General(commands.Cog):
 
     def __init__(self, client):
         self._client = client
+        with open('./config.json') as f:
+            self._config = json.load(f)
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        if not before.self_stream and after.self_stream:
+            try:
+                notifications_channel_id = self._config['discord']['guild-settings'][str(member.guild.id)]['stream-notifications-channel']
+                notifications_channel = self._client.get_channel(notifications_channel_id)
+                await notifications_channel.send(f'{member.mention} is streaming in {after.channel}')
+            except KeyError:
+                pass
 
     @commands.command(name='8ball')
     async def _8ball(self, ctx, *, question):
