@@ -1,4 +1,5 @@
 import json
+import random
 import re
 
 import discord
@@ -94,6 +95,16 @@ class General(commands.Cog):
                 role = await ctx.guild.create_role(name=colour_ci, colour=colour_obj)
 
             await user.add_roles(role)
+
+    @commands.command(name='decide')
+    async def _decide(self, ctx, *options):
+        """I'll decide for you!
+
+        Options are separated by spaces. If an option includes a space, wrap it in double quotes
+        """
+        if len(options) > 0:
+            choice = random.choice(options)
+            await send_as_embed(ctx.send, choice)
 
     @commands.command(name='fetch')
     async def _fetch(self, ctx):
