@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from webcolors import name_to_hex
 
+from helpers.discord import send_as_embed
 from helpers.randomlists import EightBall
 
 
@@ -19,16 +20,19 @@ class General(commands.Cog):
     async def on_voice_state_update(self, member, before, after):
         if not before.self_stream and after.self_stream:
             try:
-                notifications_channel_id = self._config['discord']['guild-settings'][str(member.guild.id)]['stream-notifications-channel']
+                notifications_channel_id = self._config['discord']['guild-settings'][str(member.guild.id)][
+                    'stream-notifications-channel']
                 notifications_channel = self._client.get_channel(notifications_channel_id)
-                await notifications_channel.send(f'{member.mention} is streaming in {after.channel}')
-            except KeyError:
+                msg = f'{member.mention} is streaming in {after.channel}'
+                await send_as_embed(notifications_channel.send, msg)
+            except (KeyError, ValueError):
                 pass
 
     @commands.command(name='8ball')
-    async def _8ball(self, ctx, *, question):
+    async def _8_ball(self, ctx, *, question):
         """Ask the magic 8-ball a question"""
-        await ctx.send(f'{ctx.message.author.mention}, {EightBall.random()}')
+        msg = f'{ctx.message.author.mention}, {EightBall.random()}'
+        await send_as_embed(ctx.send, msg)
 
     @commands.command(name='colour', aliases=['color'])
     @commands.max_concurrency(1, commands.BucketType.guild, wait=True)
@@ -56,8 +60,8 @@ class General(commands.Cog):
             invalid_colour = True
 
         if invalid_colour:
-            await ctx.send(
-                f'Invalid colour [{colour}] specified. Must be either a valid CSS3 colour or a hex colour (e.g. 0x00bfff). 0x000000 is not valid.')
+            msg = f'Invalid colour [{colour}] specified. Must be either a valid CSS3 colour or a hex colour (e.g. 0x00bfff). 0x000000 is not valid.'
+            await send_as_embed(ctx.send, msg)
         else:
             # find any existing colour roles and clean them up
             user = ctx.message.author
@@ -94,18 +98,11 @@ class General(commands.Cog):
     @commands.command(name='fetch')
     async def _fetch(self, ctx):
         """Play fetch with me plz"""
-        await ctx.send(f'Okay, {ctx.message.author.mention}! 🐶')
+        msg = f'Okay, {ctx.message.author.mention}! 🐶'
+        await send_as_embed(ctx.send, msg)
 
         activity = discord.Game(f'fetch with {ctx.message.author.display_name}')
         await self._client.change_presence(activity=activity)
-
-    @commands.command(name='unusedroles')
-    @commands.is_owner()
-    async def _unusedroles(self, ctx):
-        """List roles which have no members"""
-        unused = [f'{role.name}_{role.id}' for role in ctx.guild.roles if len(role.members) == 0]
-        msg = 'none' if len(unused) == 0 else str(unused)
-        await ctx.send(msg)
 
 
 def setup(client):

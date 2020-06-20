@@ -5,6 +5,7 @@ from discord.ext import commands
 from giphy_client.rest import ApiException
 
 from helpers.randomlists import Insult
+from helpers.discord import send_as_embed
 
 
 class Giphy(commands.Cog):
@@ -31,13 +32,15 @@ class Giphy(commands.Cog):
             if api_response.data.url is not None and len(api_response.data.url) != 0:
                 # embed = discord.Embed()
                 # embed.set_image(url=api_response.data.embed_url)
-                await ctx.send(
-                    f'{ctx.message.author.mention} here\'s your {query} meme, you {Insult.random()}: {api_response.data.url}')
+                msg = f'{ctx.message.author.mention} here\'s your {query} meme, you {Insult.random()}: {api_response.data.url}'
+                await ctx.send(msg)
             else:
-                await ctx.send(f'#rule34fail {ctx.message.author.mention}')
+                msg = f'#rule34fail {ctx.message.author.mention}'
+                await send_as_embed(ctx.send, msg)
         except ApiException as e:
             print(f'Exception when calling DefaultApi->gifs_translate_get with query [{query}]: {e}\n')
-            await ctx.send('something went wrong')
+            msg = 'something went wrong'
+            await send_as_embed(ctx.send, msg)
 
     @commands.command(name="randommeme")
     async def _random_meme(self, ctx, *, query=None):
@@ -52,14 +55,16 @@ class Giphy(commands.Cog):
         try:
             api_response = api_instance.gifs_random_get(api_key, tag=query)
             if api_response.data.url is not None and len(api_response.data.url) != 0:
-                await ctx.send(
-                    f'{ctx.message.author.mention} here\'s your random{" "+ query if query is not None else ""} meme, you {Insult.random()}: {api_response.data.url}')
+                msg = f'{ctx.message.author.mention} here\'s your random{" "+ query if query is not None else ""} meme, you {Insult.random()}: {api_response.data.url}'
+                await ctx.send(msg)
             else:
                 print(f'No URL in response when calling DefaultApi->gifs_random_get')
-                await ctx.send(f'I done goofed {ctx.message.author.mention}... try again')
+                msg = f'I done goofed {ctx.message.author.mention}... try again'
+                await send_as_embed(ctx.send, msg)
         except ApiException as e:
             print(f'Exception when calling DefaultApi->gifs_random_get: {e}\n')
-            await ctx.send('something went wrong')
+            msg = 'something went wrong'
+            await send_as_embed(ctx.send, msg)
 
 
 def setup(client):
