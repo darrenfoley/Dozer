@@ -15,6 +15,10 @@ class Owner(commands.Cog, command_attrs={'hidden': True, }):
             return True
         raise commands.NotOwner('You do not own this bot.')  # TODO: handle errors
 
+    @commands.command('dm')
+    async def _dm(self, ctx, recipient: discord.Member, *, msg):
+        await send_as_embed(recipient.send, msg)
+
     @commands.command(name='load')
     async def _load(self, ctx, cog):
         """Load the specified cog"""
