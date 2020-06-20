@@ -20,14 +20,23 @@ class General(commands.Cog):
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         if not before.self_stream and after.self_stream:
+            # If stream_categories is specified in config.json, send notification if channel is listed.
+            # Otherwise send notification regardless
+            send_notification = True
             try:
-                notifications_channel_id = self._config['discord']['guild-settings'][str(member.guild.id)][
-                    'stream-notifications-channel']
-                notifications_channel = self._client.get_channel(notifications_channel_id)
-                msg = f'{member.mention} is streaming in {after.channel}'
-                await send_as_embed(notifications_channel.send, msg)
-            except (KeyError, ValueError):
+                stream_categories = self._config['discord']['guild-settings'][str(member.guild.id)]['stream-categories']
+                send_notification = after.channel.category_id in stream_categories
+            except KeyError:
                 pass
+            if send_notification:
+                try:
+                    notifications_channel_id = self._config['discord']['guild-settings'][str(member.guild.id)][
+                        'stream-notifications-channel']
+                    notifications_channel = self._client.get_channel(notifications_channel_id)
+                    msg = f'{member.mention} is streaming in {after.channel}'
+                    await send_as_embed(notifications_channel.send, msg)
+                except KeyError:
+                    pass
 
     @commands.command(name='8ball')
     async def _8_ball(self, ctx, *, question):
