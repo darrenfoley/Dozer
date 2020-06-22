@@ -21,7 +21,7 @@ class Giphy(commands.Cog):
     async def _meme(self, ctx, *, query):
         """Get the perfect GIF using GIPHY's special sauce algorithm
 
-        Uses GIPHY's translate endpoint: https://developers.giphy.com/docs/api/endpoint#translate
+        Uses GIPHY's [translate endpoint](https://developers.giphy.com/docs/api/endpoint#translate)
         """
 
         api_instance = giphy_client.DefaultApi()
@@ -46,7 +46,7 @@ class Giphy(commands.Cog):
     async def _random_meme(self, ctx, *, query=None):
         """Get a random GIF. query is optional
 
-        Uses GIPHY's random endpoint: https://developers.giphy.com/docs/api/endpoint#random
+        Uses GIPHY's [random endpoint](https://developers.giphy.com/docs/api/endpoint#random)
         """
 
         api_instance = giphy_client.DefaultApi()

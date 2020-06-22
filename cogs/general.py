@@ -49,8 +49,8 @@ class General(commands.Cog):
     async def _colour(self, ctx, *, colour):
         """Set name colour with CSS3 colours or hex (e.g. 0x00aaff)
 
-        CSS3 colours: https://www.w3.org/TR/css-color-3/#svg-color
-        Hex colour picker: https://www.google.com/search?q=hex+colour+picker
+        [CSS3 colours](https://www.w3.org/TR/css-color-3/#svg-color)
+        [Hex colour picker](https://www.google.com/search?q=hex+colour+picker)
         """
 
         colour_ci = colour.upper()
