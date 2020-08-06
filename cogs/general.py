@@ -46,12 +46,22 @@ class General(commands.Cog):
 
     @commands.command(name='colour', aliases=['color'])
     @commands.max_concurrency(1, commands.BucketType.guild, wait=True)
-    async def _colour(self, ctx, *, colour):
+    async def _colour(self, ctx, colour, *, user: discord.Member = None):
         """Set name colour with CSS3 colours or hex (e.g. 0x00aaff)
 
         [CSS3 colours](https://www.w3.org/TR/css-color-3/#svg-color)
         [Hex colour picker](https://www.google.com/search?q=hex+colour+picker)
+
+        Only the bot owner can set colours for other users.
         """
+
+        if user is None:
+            user = ctx.message.author
+        else:
+            is_owner = await self._client.is_owner(ctx.message.author)
+            if not is_owner:
+                await send_as_embed(ctx.send, 'You are not allowed to set colour for another user')
+                return
 
         colour_ci = colour.upper()
 
@@ -74,7 +84,6 @@ class General(commands.Cog):
             await send_as_embed(ctx.send, msg)
         else:
             # find any existing colour roles and clean them up
-            user = ctx.message.author
             user_roles = user.roles
             already_has_role = False  # user already has the role they want
             for r in user_roles:
